@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+::-webkit-scrollbar {
+width: 5px;
+height: 10px;
+}
+
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment  {
+height: 10px;
+background-color: transparent;
+}
+
+::-webkit-scrollbar-track-piece  {
+background: transparent;
+-webkit-border-radius: 15px;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+height: 10px;
+background-color: #a0a0a0;
+-webkit-border-radius: 6px;
+}
+
+textarea {
+  scrollbar-gutter: stable;
+}
+
+#drag-bar {
+  -webkit-app-region: drag; 
+}
+
+#drag-bar button {
+  -webkit-app-region: no-drag;
+}
+

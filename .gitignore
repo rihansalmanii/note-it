@@ -1,0 +1,83 @@
+# ==========================================
+# DEPENDENCIES & BUILD OUTPUTS
+# ==========================================
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs for each sub-project
+frontend/dist/
+frontend/build/
+electron/dist/
+electron/out/
+backend/build/
+
+# ==========================================
+# ENVIRONMENT VARIABLES & SECRETS
+# ==========================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+
+# ==========================================
+# IDE & EDITOR FILES
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ==========================================
+# LOGS & TEMP FILES
+# ==========================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# OS GENERATED FILES
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ==========================================
+# TESTING & COVERAGE
+# ==========================================
+coverage/
+.nyc_output/
+.jest/
+test-results/
+
+# ==========================================
+# TYPESCRIPT CACHE
+# ==========================================
+*.tsbuildinfo
+
+# ==========================================
+# ELECTRON SPECIFIC
+# ==========================================
+# If you use electron-builder cache
+.cache/
+# Temporary files during packaging
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm
