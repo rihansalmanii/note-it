@@ -39,7 +39,8 @@ const Topbar = ({isSaving}) => {
   };
 
   const handleAllNotes = () => {
-    navigate("/");
+    window.electronAPI?.openMainWindow()
+    setShowOptions(false)
   };
 
   const handleDeleteNote = async () => {
@@ -111,7 +112,7 @@ const Topbar = ({isSaving}) => {
           </button>
           <button
             onClick={() => {
-              navigate("/");
+              window.electronAPI?.closeWindow();
             }}
             className="hover:bg-[#5f5f5f44] px-2 h-full "
           >

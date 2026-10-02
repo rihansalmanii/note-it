@@ -1,9 +1,8 @@
 import React from "react";
-import Topbar from "./components/Topbar";
-import TextArea from "./components/TextArea";
 import { Route, Routes } from "react-router-dom";
 import NotePage from "./Pages/NotePage";
 import AllNotes from "./Pages/AllNotes";
+
 
 
 const App = () => {

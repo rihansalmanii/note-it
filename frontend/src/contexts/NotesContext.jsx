@@ -19,8 +19,7 @@ const NotesProvider = ({ children }) => {
   const fetchNotes = async () => {
     try {
       setIsLoading(true)
-      const res = await getAllNotes();
-      const data = res.notes;
+      const data = await getAllNotes();
       setNotes(data);
     } catch (err) {
       console.log(err);
