@@ -163,7 +163,7 @@ const Topbar = ({isSaving}) => {
                   ></button>
                 ))}
             </div>
-
+            
             {/* bottom part for notes */}
             <div className="flex flex-col items-start text-sm w-full">
               <button
