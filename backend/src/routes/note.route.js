@@ -2,16 +2,17 @@ const express = require("express")
 const router = express.Router()
 
 const notesController = require("../controllers/notes.controller")
+const { authUser } = require("../middlewares/auth.middleware")
 
 
-router.get("/", notesController.getNotes)
-router.post("/", notesController.addNote)
+router.get("/", authUser, notesController.getNotes)
+router.post("/", authUser, notesController.addNote)
 
 
-router.get("/:id", notesController.getNoteById)
-router.patch("/:id", notesController.editNote)
-router.patch("/:id/bg", notesController.changeNoteBg)
-router.delete("/:id", notesController.deleteNoteById)
+router.get("/:id", authUser, notesController.getNoteById)
+router.patch("/:id", authUser, notesController.editNote)
+router.patch("/:id/bg", authUser, notesController.changeNoteBg)
+router.delete("/:id", authUser, notesController.deleteNoteById)
 
 
 module.exports = router
