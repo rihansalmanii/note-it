@@ -14,7 +14,7 @@ const authUser = async (req, res, next) => {
         const user = await UserModel.findById(decoded._id)
 
         if(!user) {
-            return res.status(404).json({ message: "user not found"})
+            return res.status(404).json({ message: "user not found from auth middleware"})
         }
 
         req.user = user
