@@ -1,5 +1,15 @@
 import api from "./api"
 
+api.interceptors.request.use(async (config) => {
+    const token = await window.electronAPI?.getToken();
+
+    if(token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+    
+    return config;
+})
+
 // create note
 export const createNote = async () => {
   try {
@@ -19,6 +29,7 @@ export const getNoteById = async (id) => {
         return res.data;
     } catch(err) {
         console.log(err)
+        throw err;
     }
 }
 
@@ -30,6 +41,7 @@ export const editNote = async (id, updatedData) => {
         return res.data;
     } catch(err) {
         console.log(err)
+        throw err;
     }
 }
 
@@ -53,6 +65,7 @@ export const deleteNoteById = async (id) => {
         return res.data;
     } catch(err) {
         console.log(err)
+        throw err;
     }
 }
 
@@ -64,5 +77,6 @@ export const updateNoteBg = async(id, newBg) => {
 
     } catch(err) {
         console.log(err)
+        throw err;
     }
 }

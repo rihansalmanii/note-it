@@ -19,6 +19,10 @@ const notesSchema = new mongoose.Schema({
     textColor: {
         type: String,
         default: '#fffff'
+    },
+    userId: {
+        type: String,
+        required: true
     }
 
 })

@@ -7,8 +7,10 @@ const addNote = async (req, res) => {
     const newNote = await noteModel.create({
       title: "",
       content: "",
-      userId: req.user._id
+      userId: (req.user._id).toString()
     });
+
+    console.log((req.user._id).toString())
 
     res.status(201).json({
       success: true,
@@ -28,8 +30,10 @@ const getNotes = async (req, res) => {
     const notes = await noteModel.find({ userId: req.user._id });
 
     if (notes.length == 0) {
+      console.log("no notes")
       return res.status(200).json({ message: "no notes for now!" });
     }
+    console.log(notes)
 
     res.status(200).json({
       success: true,

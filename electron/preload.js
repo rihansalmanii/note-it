@@ -5,5 +5,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
     openNoteWindow: (noteId) => ipcRenderer.invoke('open-note-window', noteId),
 
-    openMainWindow: () => ipcRenderer.send('open-main-window'),
+    openMainWindow: () => ipcRenderer.invoke('open-main-window'),
+
+    saveToken: (token) => ipcRenderer.invoke('auth-save-token', token),
+
+    getToken: () => ipcRenderer.invoke('auth-get-token'),
+
+    clearToken: () => ipcRenderer.invoke('auth-clear-token')
 });

@@ -1,12 +1,29 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const axios = require("axios");
+const Store = require("electron-store");
+const store = new Store();
 
 let mainWindow;
 
 const noteWindows = new Map();
 
-ipcMain.handle("open-note-window", async (event, noteId) => {
+// token-storage || login or register
+ipcMain.handle('auth-save-token', (event, token) => {
+  store.set('auth.token', token)
+})
+
+// token-retreival
+ipcMain.handle('auth-get-token', () => {
+  return store.get('auth.token') || null
+})
+
+// token-delettion || logout
+ipcMain.handle('auth-clear-token', () => {
+  store.delete('auth.token')
+})
+
+ipcMain.handle("open-note-window", async (noteId) => {
   if (noteWindows.has(noteId)) {
     const existingWindow = noteWindows.get(noteId);
     if (!existingWindow.isDestroyed()) {
