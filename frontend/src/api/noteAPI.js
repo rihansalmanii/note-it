@@ -1,19 +1,19 @@
-import api from "./api"
+import api from "./api";
 
 api.interceptors.request.use(async (config) => {
-    const token = await window.electronAPI?.getToken();
+  const token = await window.electronAPI?.getToken();
 
-    if(token) {
-        config.headers.Authorization = `Bearer ${token}`
-    }
-    
-    return config;
-})
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
 
 // create note
 export const createNote = async () => {
   try {
-    const res = await api.post("/");
+    const res = await api.post("/notes/");
     return res.data.newNote || res.data; // Ensure we return the note object
   } catch (err) {
     console.error("Failed to create note:", err);
@@ -23,35 +23,35 @@ export const createNote = async () => {
 
 // get specific note
 export const getNoteById = async (id) => {
-    try {
-        const res = await api.get(`/${id}`)
+  try {
+    const res = await api.get(`/notes/${id}`);
 
-        return res.data;
-    } catch(err) {
-        console.log(err)
-        throw err;
-    }
-}
+    return res.data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
 
 // edit note
 export const editNote = async (id, updatedData) => {
-    try {
-        const res = await api.patch(`/${id}`, updatedData)
+  try {
+    const res = await api.patch(`/notes/${id}`, updatedData);
 
-        return res.data;
-    } catch(err) {
-        console.log(err)
-        throw err;
-    }
-}
+    return res.data;
+  } catch (err) {
+    console.log(err.message);
+    throw err;
+  }
+};
 
 export const getAllNotes = async () => {
   try {
-    const res = await api.get("/");
+    const res = await api.get("/notes/");
     // Adjust this based on your backend response structure
     // If backend returns { notes: [...] }, use res.data.notes
     // If backend returns [...], use res.data
-    return res.data.notes || res.data; 
+    return res.data.notes || res.data;
   } catch (err) {
     console.error("Failed to fetch notes:", err);
     return []; // Return empty array instead of undefined to prevent crashes
@@ -59,24 +59,23 @@ export const getAllNotes = async () => {
 };
 
 export const deleteNoteById = async (id) => {
-    try {
-        const res = await api.delete(`/${id}`)
+  try {
+    const res = await api.delete(`/notes/${id}`);
 
-        return res.data;
-    } catch(err) {
-        console.log(err)
-        throw err;
-    }
-}
+    return res.data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
 
-export const updateNoteBg = async(id, newBg) => {
-    try {
-        const res = await api.patch(`/${id}/bg`, {newBg})
-        
-        return res.data
+export const updateNoteBg = async (id, newBg) => {
+  try {
+    const res = await api.patch(`/notes/${id}/bg`, { newBg });
 
-    } catch(err) {
-        console.log(err)
-        throw err;
-    }
-}
+    return res.data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};

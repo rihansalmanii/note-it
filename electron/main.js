@@ -5,25 +5,23 @@ const Store = require("electron-store");
 const store = new Store();
 
 let mainWindow;
-
 const noteWindows = new Map();
 
-// token-storage || login or register
-ipcMain.handle('auth-save-token', (event, token) => {
-  store.set('auth.token', token)
-})
+// --- Auth IPC Handlers ---
+ipcMain.handle("auth-save-token", (event, token) => {
+  store.set("auth.token", token);
+});
 
-// token-retreival
-ipcMain.handle('auth-get-token', () => {
-  return store.get('auth.token') || null
-})
+ipcMain.handle("auth-get-token", () => {
+  return store.get("auth.token") || null;
+});
 
-// token-delettion || logout
-ipcMain.handle('auth-clear-token', () => {
-  store.delete('auth.token')
-})
+ipcMain.handle("auth-clear-token", () => {
+  store.delete("auth.token");
+});
 
-ipcMain.handle("open-note-window", async (noteId) => {
+// --- Note Window Handler with Auth ---
+ipcMain.handle("open-note-window", async (event, noteId) => {
   if (noteWindows.has(noteId)) {
     const existingWindow = noteWindows.get(noteId);
     if (!existingWindow.isDestroyed()) {
@@ -34,52 +32,56 @@ ipcMain.handle("open-note-window", async (noteId) => {
   }
 
   try {
+    // ✅ SECURITY FIX: Attach stored JWT to main process API call
+    const token = store.get("auth.token");
+    if (!token) throw new Error("No authentication token found");
+
     const response = await axios.get(
       `http://localhost:3000/api/notes/${noteId}`,
+      { headers: { Authorization: `Bearer ${token}` } },
     );
-    const noteData = response?.data?.note || response.data;
 
+    const noteData = response?.data?.note || response.data;
     createStickyNoteWindow(noteId, noteData);
   } catch (err) {
     console.log("failed to load note", err.response?.data || err.message);
   }
 });
 
-ipcMain.on('open-main-window', () => {
-  if(mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.show()
-    mainWindow.focus()
+ipcMain.on("open-main-window", () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.show();
+    mainWindow.focus();
     return;
   }
-  createMainWindow()
-})
+  createMainWindow();
+});
 
 ipcMain.on("app-close-request", (event) => {
   const window = BrowserWindow.fromWebContents(event.sender);
-
   if (window && !window.isDestroyed()) {
     window.close();
   }
 });
 
-// main list window
+// --- Main Window Creation ---
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 400,
     height: 650,
-    show: false, // Keep hidden until ready
+    show: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, "preload.js"), // Ensure this exists
+      preload: path.join(__dirname, "preload.js"),
     },
     frame: false,
-    backgroundColor: "#00000000", // Explicit transparent bg
+    backgroundColor: "#00000000",
   });
 
   if (process.env.ELECTRON_DEV === "true") {
     mainWindow.loadURL("http://localhost:5173/");
-    mainWindow.webContents.openDevTools(); // Auto-open on launch
+    mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(
       path.join(__dirname, "..", "frontend", "dist", "index.html"),
@@ -94,13 +96,12 @@ function createMainWindow() {
     mainWindow = null;
   });
 
-  // Handle white/black screen crashes
   mainWindow.webContents.on("crashed", () => {
     console.error("Renderer crashed!");
   });
 }
 
-// dedicated window for sticky note
+// --- Sticky Note Window Creation ---
 function createStickyNoteWindow(noteId) {
   const win = new BrowserWindow({
     width: 280,
@@ -119,9 +120,10 @@ function createStickyNoteWindow(noteId) {
   noteWindows.set(noteId, win);
 
   if (process.env.ELECTRON_DEV === "true") {
-    // ✅ CRITICAL: Load the SPECIFIC note route, NOT the root '/'
     win.loadURL(`http://localhost:5173/#/note/${noteId}`);
+    win.webContents.openDevTools();
   } else {
+    // ✅ PRODUCTION FIX: Use dynamic noteId instead of hardcoded '/login'
     win.loadFile(path.join(__dirname, "..", "frontend", "dist", "index.html"), {
       hash: `/note/${noteId}`,
     });

@@ -4,6 +4,7 @@ import TextArea from "../components/TextArea";
 
 const NotePage = () => {
   const [isSaving, setIsSaving] = useState(false);
+  console.log("notepage")
 
   return (
     <div className="h-screen flex flex-col">

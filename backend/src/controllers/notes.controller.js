@@ -96,7 +96,7 @@ const editNote = async (req, res) => {
     }
 
     const editedNote = await noteModel.findOneAndUpdate(
-      id,
+      { _id: id },
       { $set: newData },
       { new: true },
     );
@@ -111,7 +111,7 @@ const editNote = async (req, res) => {
       editedNote,
     });
   } catch (err) {
-    res.status(500).json({ message: err });
+    res.status(500).json({ message: err.message });
   }
 };
 

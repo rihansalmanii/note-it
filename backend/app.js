@@ -8,7 +8,12 @@ const authRouter = require("./src/routes/auth.routes")
 
 
 
-app.use(cors())
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Vite dev server
+  credentials: true, // Allow cookies to be sent/received
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Explicitly allow OPTIONS
+  allowedHeaders: ['Content-Type', 'Authorization'] // Allow auth headers
+}));
 app.use(express.json())
 app.use(cookieParser())
 

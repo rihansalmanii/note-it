@@ -77,11 +77,15 @@ const loginUser = async (req, res) => {
         samesite: "strict"
     })
 
+    const userWithoutPassword = user.toObject()
+    delete userWithoutPassword.password
+
     res.status(200).json({
+        success: true,
         message: "logged in successfully",
-        user
+        user: userWithoutPassword,
+        token
     })
-    console.log(user._id)
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

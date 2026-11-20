@@ -69,8 +69,10 @@ const TextArea = ({ setIsSaving }) => {
   // handle change funtion
   const handleChange = useCallback(
     (e) => {
+      console.log("updating note")
       const newContent = e.target.value;
       setContent(newContent);
+      console.log(newContent)
 
       if (timeRef.current) {
         clearTimeout(timeRef.current);
@@ -131,7 +133,8 @@ const TextArea = ({ setIsSaving }) => {
           className="textarea resize-none h-full p-2 w-full  outline-none selection:bg-(--selection-bg) selection:text-white"
           style={{
             background: "transparent",
-            "--selection-bg": currentNote?.color || "#e8af13"
+            "--selection-bg": currentNote?.color || "#e8af13",
+            color: activeBg.label === "dark" ? "#fff" : "#000",
           }}
         ></textarea>
         {/* <div className="absolute z-50 bottom-2 left-1/2 -translate-x-1/2">

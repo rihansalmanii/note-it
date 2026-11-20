@@ -1,31 +1,83 @@
 // frontend/src/Pages/LoginPage.jsx
-import React from "react";
+import React, { useState } from "react";
+import { login } from "../api/authAPI";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const LoginPage = () => {
+  const { setIsAuthenticated, setIsLoading } = useAuth();
+
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const loginResponse = await login(formData);
+      console.log(loginResponse.success);
+
+      await window.electronAPI?.saveToken(loginResponse.token);
+
+      setIsAuthenticated(true);
+      navigate("/", { replace: true });
+    } catch (err) {
+      console.log(err);
+      setError(err.response?.data?.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#121212] p-4">
       <div className="w-full max-w-md rounded-2xl border border-white/5 bg-[#1e1e1e] p-8 shadow-2xl">
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold text-white">Welcome Back</h1>
-          <p className="mt-2 text-sm text-gray-400">Sign in to access your notes</p>
+          <p className="mt-2 text-sm text-gray-400">
+            Sign in to access your notes
+          </p>
         </div>
 
         {/* Email & Password Form */}
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-gray-400">Email</label>
+            <label className="mb-1.5 block text-xs font-medium text-gray-400">
+              Email
+            </label>
             <input
               type="email"
+              name="email"
+              onChange={handleChange}
               placeholder="you@example.com"
               className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-colors focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-gray-400">Password</label>
+            <label className="mb-1.5 block text-xs font-medium text-gray-400">
+              Password
+            </label>
             <input
               type="password"
+              name="password"
+              onChange={handleChange}
               placeholder="••••••••"
               className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-colors focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
@@ -75,7 +127,9 @@ const LoginPage = () => {
         {/* Footer Link */}
         <p className="mt-6 text-center text-xs text-gray-500">
           Don't have an account?{" "}
-          <span className="cursor-pointer text-blue-400 hover:text-blue-300">Create one</span>
+          <span className="cursor-pointer text-blue-400 hover:text-blue-300">
+            Create one
+          </span>
         </p>
       </div>
     </div>
